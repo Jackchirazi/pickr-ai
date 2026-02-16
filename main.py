@@ -1,5 +1,5 @@
 """
-Pickr AI Email Sales Rep — Main Entry Point (v2)
+Pickr AI Email Sales Rep — Main Entry Point (v2.1)
 
 Usage:
     # Start the web dashboard + API server:
