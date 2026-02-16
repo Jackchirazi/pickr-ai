@@ -2,106 +2,106 @@
   {
     "objection_type": "shipping_costs",
     "pattern_keywords": ["shipping", "freight", "delivery cost", "shipping expensive"],
-    "response_template": "Shipping is structured into our pricing model. The landed cost is what matters — and on these brands, the math works. Happy to walk through the numbers on a quick call.",
-    "category": "logistics",
+    "template_body": "Shipping is structured into our pricing model. The landed cost is what matters — and on these brands, the math works. Happy to walk through the numbers on a quick call.",
+    "notes": "logistics",
     "is_active": true
   },
   {
     "objection_type": "need_samples",
     "pattern_keywords": ["sample", "try first", "test order", "small order first"],
-    "response_template": "We can discuss a trial structure on the call. Most partners start focused and scale from there.",
-    "category": "logistics",
+    "template_body": "We can discuss a trial structure on the call. Most partners start focused and scale from there.",
+    "notes": "logistics",
     "is_active": true
   },
   {
     "objection_type": "returns_policy",
     "pattern_keywords": ["return policy", "returns", "what if it doesn't sell", "unsold inventory"],
-    "response_template": "We structure initial orders around proven sellers in your category. The brands we'd recommend have strong sell-through data. Happy to walk through the specifics.",
-    "category": "logistics",
+    "template_body": "We structure initial orders around proven sellers in your category. The brands we'd recommend have strong sell-through data. Happy to walk through the specifics.",
+    "notes": "logistics",
     "is_active": true
   },
   {
     "objection_type": "need_approval",
     "pattern_keywords": ["check with", "run it by", "need approval", "partner", "business partner", "my boss"],
-    "response_template": "Of course. Happy to include them on the call — sometimes it's easier to evaluate together. I can send a calendar invite for all parties.",
-    "category": "decision_maker",
+    "template_body": "Of course. Happy to include them on the call — sometimes it's easier to evaluate together. I can send a calendar invite for all parties.",
+    "notes": "decision_maker",
     "is_active": true
   },
   {
     "objection_type": "already_stocked",
     "pattern_keywords": ["already stock", "already carry", "already have these", "we sell these"],
-    "response_template": "Good — then you know the demand. The question is whether you're getting the best sourcing terms on them. That's worth a 30-minute comparison.",
-    "category": "competition",
+    "template_body": "Good — then you know the demand. The question is whether you're getting the best sourcing terms on them. That's worth a 30-minute comparison.",
+    "notes": "competition",
     "is_active": true
   },
   {
     "objection_type": "too_many_brands",
     "pattern_keywords": ["too many brands", "overwhelmed", "streamlining", "reducing vendors"],
-    "response_template": "Understood. We're not adding complexity — we consolidate sourcing across multiple brands through one relationship. That's the value.",
-    "category": "capacity",
+    "template_body": "Understood. We're not adding complexity — we consolidate sourcing across multiple brands through one relationship. That's the value.",
+    "notes": "capacity",
     "is_active": true
   },
   {
     "objection_type": "cash_flow",
     "pattern_keywords": ["cash flow", "tight budget", "can't invest", "no money", "limited funds"],
-    "response_template": "The brands we source at significant discounts off retail actually improve cash position — your per-unit cost drops significantly. Worth looking at the numbers together.",
-    "category": "financial",
+    "template_body": "The brands we source at significant discounts off retail actually improve cash position — your per-unit cost drops significantly. Worth looking at the numbers together.",
+    "notes": "financial",
     "is_active": true
   },
   {
     "objection_type": "slow_season",
     "pattern_keywords": ["slow season", "off season", "quiet period", "slow right now"],
-    "response_template": "That's actually ideal timing to evaluate sourcing before your next buying cycle ramps up. Easier to plan when you're not in the thick of it.",
-    "category": "timing",
+    "template_body": "That's actually ideal timing to evaluate sourcing before your next buying cycle ramps up. Easier to plan when you're not in the thick of it.",
+    "notes": "timing",
     "is_active": true
   },
   {
     "objection_type": "legal_concerns",
     "pattern_keywords": ["legal", "authorized dealer", "authorized reseller", "gray market", "diversion"],
-    "response_template": "Valid concern. Our sourcing is structured and we can walk through the supply chain details on a call. It's the first thing serious partners want to verify.",
-    "category": "compliance",
+    "template_body": "Valid concern. Our sourcing is structured and we can walk through the supply chain details on a call. It's the first thing serious partners want to verify.",
+    "notes": "compliance",
     "is_active": true
   },
   {
     "objection_type": "website_only",
     "pattern_keywords": ["only sell online", "website only", "no physical store", "e-commerce only"],
-    "response_template": "Most of our e-commerce partners see strong margins on these brands. The online channel is actually where the velocity is highest.",
-    "category": "channel",
+    "template_body": "Most of our e-commerce partners see strong margins on these brands. The online channel is actually where the velocity is highest.",
+    "notes": "channel",
     "is_active": true
   },
   {
     "objection_type": "small_business",
     "pattern_keywords": ["too small", "small operation", "just starting", "new business"],
-    "response_template": "We work across all sizes. Some of our best partners started with a focused initial order and scaled. It's about the category fit, not the volume.",
-    "category": "scale",
+    "template_body": "We work across all sizes. Some of our best partners started with a focused initial order and scaled. It's about the category fit, not the volume.",
+    "notes": "scale",
     "is_active": true
   },
   {
     "objection_type": "send_email_info",
     "pattern_keywords": ["send me more info", "email me details", "put it in writing", "send info"],
-    "response_template": "Happy to share specifics — the most efficient way is a quick 30-minute walkthrough where I can tailor the information to your business. More useful than a generic PDF.",
-    "category": "information_request",
+    "template_body": "Happy to share specifics — the most efficient way is a quick 30-minute walkthrough where I can tailor the information to your business. More useful than a generic PDF.",
+    "notes": "information_request",
     "is_active": true
   },
   {
     "objection_type": "existing_supplier",
     "pattern_keywords": ["already have a supplier", "happy with current", "existing distributor", "already working with"],
-    "response_template": "Makes sense. Most of our partners had existing suppliers too — they use us for the brands and pricing their current distributors can't match. Quick comparison is usually eye-opening.",
-    "category": "competition",
+    "template_body": "Makes sense. Most of our partners had existing suppliers too — they use us for the brands and pricing their current distributors can't match. Quick comparison is usually eye-opening.",
+    "notes": "competition",
     "is_active": true
   },
   {
     "objection_type": "price_too_high",
     "pattern_keywords": ["too expensive", "price too high", "cheaper elsewhere", "better price"],
-    "response_template": "Our sourcing is designed to deliver the best landed cost. Rather than compare list prices, let's look at the actual unit economics on a call — that's where the difference shows.",
-    "category": "financial",
+    "template_body": "Our sourcing is designed to deliver the best landed cost. Rather than compare list prices, let's look at the actual unit economics on a call — that's where the difference shows.",
+    "notes": "financial",
     "is_active": true
   },
   {
     "objection_type": "not_right_time",
     "pattern_keywords": ["not right now", "maybe later", "bad timing", "too busy", "come back later"],
-    "response_template": "Totally understand. Would it make sense to book a 30-minute slot for next week? That way we can evaluate when you have a clear window.",
-    "category": "timing",
+    "template_body": "Totally understand. Would it make sense to book a 30-minute slot for next week? That way we can evaluate when you have a clear window.",
+    "notes": "timing",
     "is_active": true
   }
 ]
