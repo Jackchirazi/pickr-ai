@@ -1,0 +1,111 @@
+[
+  {
+    "priority": 1,
+    "description": "High-scale Amazon seller with brand overlap → expansion angle",
+    "primary_angle": "expansion",
+    "secondary_angle": "margin_improvement",
+    "channel_match": "amazon",
+    "min_scale_score": 70,
+    "requires_brand_overlap": true,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 2,
+    "description": "Amazon seller with adjacent brands, good scale → growth angle",
+    "primary_angle": "growth",
+    "secondary_angle": "expansion",
+    "channel_match": "amazon",
+    "min_scale_score": 50,
+    "requires_adjacent_brands": true,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 3,
+    "description": "Amazon seller, low private label, decent scale → margin improvement",
+    "primary_angle": "margin_improvement",
+    "secondary_angle": "growth",
+    "channel_match": "amazon",
+    "min_scale_score": 40,
+    "max_private_label_ratio": 0.5,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 4,
+    "description": "Walmart seller, high scale → expansion angle",
+    "primary_angle": "expansion",
+    "secondary_angle": "channel_diversification",
+    "channel_match": "walmart",
+    "min_scale_score": 60,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 5,
+    "description": "Walmart seller, moderate scale → growth angle",
+    "primary_angle": "growth",
+    "secondary_angle": "margin_improvement",
+    "channel_match": "walmart",
+    "min_scale_score": 30,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 6,
+    "description": "Shopify DTC store, good scale → channel diversification",
+    "primary_angle": "channel_diversification",
+    "secondary_angle": "growth",
+    "channel_match": "shopify",
+    "min_scale_score": 40,
+    "brand_query": {"priority_first": true, "cap": 2}
+  },
+  {
+    "priority": 7,
+    "description": "Retail multi-location, high scale → expansion",
+    "primary_angle": "expansion",
+    "secondary_angle": "margin_improvement",
+    "channel_match": "retail",
+    "min_scale_score": 60,
+    "min_store_count": 3,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 8,
+    "description": "Retail store, moderate scale → growth",
+    "primary_angle": "growth",
+    "secondary_angle": "expansion",
+    "channel_match": "retail",
+    "min_scale_score": 30,
+    "brand_query": {"priority_first": true, "cap": 2}
+  },
+  {
+    "priority": 9,
+    "description": "Multi-channel seller, high scale → expansion",
+    "primary_angle": "expansion",
+    "secondary_angle": "margin_improvement",
+    "channel_match": "multi-channel",
+    "min_scale_score": 60,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 10,
+    "description": "Multi-channel seller, moderate scale → growth",
+    "primary_angle": "growth",
+    "secondary_angle": "expansion",
+    "channel_match": "multi-channel",
+    "min_scale_score": 30,
+    "brand_query": {"priority_first": true, "cap": 3}
+  },
+  {
+    "priority": 20,
+    "description": "Any channel, high MAP behavior → compliance angle",
+    "primary_angle": "compliance",
+    "secondary_angle": "margin_improvement",
+    "min_map_behavior_score": 80,
+    "brand_query": {"priority_first": true, "cap": 2}
+  },
+  {
+    "priority": 99,
+    "description": "Catch-all fallback → growth angle",
+    "primary_angle": "growth",
+    "secondary_angle": null,
+    "brand_query": {"priority_first": true, "cap": 3}
+  }
+]

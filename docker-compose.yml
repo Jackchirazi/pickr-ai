@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: pickr
+      POSTGRES_PASSWORD: pickr
+      POSTGRES_DB: pickr
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pickr"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for job queue (future use)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Pickr AI API + Dashboard
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://pickr:pickr@postgres:5432/pickr
+      - REDIS_URL=redis://redis:6379/0
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: python main.py serve
+
+  # Pickr AI Background Worker
+  worker:
+    build: .
+    environment:
+      - DATABASE_URL=postgresql://pickr:pickr@postgres:5432/pickr
+      - REDIS_URL=redis://redis:6379/0
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: python -m pickr.scheduler 30
+
+volumes:
+  pgdata:
