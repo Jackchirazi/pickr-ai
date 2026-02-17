@@ -423,9 +423,6 @@ class PickrPipeline:
         if not lead:
             return {"error": "Lead not found"}
 
-        if not lead.website_url:
-            return {"error": "No website URL for lead", "lead_id": lead_id}
-
         # Skip if already has purchasing email
         if lead.purchasing_email:
             return {"status": "already_enriched", "email": lead.purchasing_email, "lead_id": lead_id}
@@ -444,7 +441,6 @@ class PickrPipeline:
     def enrich_all_leads_email(self, db: Session) -> dict:
         """Find and enrich emails for all leads missing purchasing emails."""
         leads = db.query(Lead).filter(
-            Lead.website_url.isnot(None),
             Lead.purchasing_email.is_(None)
         ).all()
 

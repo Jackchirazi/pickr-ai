@@ -181,16 +181,65 @@ class EmailFinder:
         return True
 
 
-def find_email_for_lead(company_name: str, website_url: str) -> Optional[str]:
+def guess_website_urls(company_name: str) -> List[str]:
     """
-    Convenience function to find email for a lead.
+    Generate likely website URLs from a company name.
+    E.g. "CREDO BEAUTY" → ["credobeauty.com", "credo-beauty.com", "credo.com"]
+    """
+    import unicodedata
+    # Normalize and clean
+    name = unicodedata.normalize('NFKD', company_name.lower())
+    name = name.encode('ascii', 'ignore').decode('ascii')
+
+    # Remove common suffixes/prefixes
+    for remove in ['(regional)', '(shoppers owned)', '(vibrant beauty)', '(bed bath & beyond)',
+                    '(if physical)', '(if physical retail)', '(if physical stores)',
+                    '(airport retail)', '(retail sections)', '(general nutrition centers)',
+                    'beauty departments', 'beauty sections', 'beauty boutique',
+                    'life cafes', 'day spa']:
+        name = name.replace(remove, '')
+
+    name = re.sub(r'[^a-z0-9\s]', '', name).strip()
+    words = name.split()
+
+    urls = []
+    # Combined: credobeauty.com
+    if words:
+        urls.append(''.join(words) + '.com')
+    # Hyphenated: credo-beauty.com
+    if len(words) > 1:
+        urls.append('-'.join(words) + '.com')
+    # First word only: credo.com
+    if len(words) > 1:
+        urls.append(words[0] + '.com')
+    # First two words: credobeauty.com (already covered above), credo-beauty.com (already covered)
+
+    return urls
+
+
+def find_email_for_lead(company_name: str, website_url: str = None) -> Optional[str]:
+    """
+    Find email for a lead. If no website_url, tries to guess it from the company name.
 
     Args:
         company_name: Company name
-        website_url: Company website URL
+        website_url: Company website URL (optional)
 
     Returns:
         Email address or None
     """
     finder = EmailFinder()
-    return finder.find_email(company_name, website_url)
+
+    # If we have a website, use it directly
+    if website_url:
+        return finder.find_email(company_name, website_url)
+
+    # Otherwise, try guessed URLs
+    guessed_urls = guess_website_urls(company_name)
+    for url in guessed_urls:
+        logger.info(f"Trying guessed URL for {company_name}: {url}")
+        result = finder.find_email(company_name, url)
+        if result:
+            return result
+
+    return None
