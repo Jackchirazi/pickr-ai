@@ -8,6 +8,7 @@ import logging
 from typing import Optional
 from fastapi import FastAPI, Depends, HTTPException, Request, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from pickr.models import (
     Lead, EmailJob, Reply, AuditLog, Job, Brand, SuppressionList,
@@ -250,6 +251,27 @@ def enrich_all_leads(db: Session = Depends(get_db)):
     """Find and enrich emails for all leads missing purchasing emails."""
     result = pipeline.enrich_all_leads_email(db)
     return result
+
+
+@app.post("/api/db/migrate")
+def run_migrations(db: Session = Depends(get_db)):
+    """Add missing columns to leads table (safe to run multiple times)."""
+    migrations = [
+        ("purchasing_email", "ALTER TABLE leads ADD COLUMN IF NOT EXISTS purchasing_email VARCHAR(300)"),
+        ("store_count", "ALTER TABLE leads ADD COLUMN IF NOT EXISTS store_count VARCHAR(50)"),
+        ("hq_location", "ALTER TABLE leads ADD COLUMN IF NOT EXISTS hq_location VARCHAR(300)"),
+        ("focus", "ALTER TABLE leads ADD COLUMN IF NOT EXISTS focus VARCHAR(500)"),
+    ]
+    results = []
+    for name, sql in migrations:
+        try:
+            db.execute(text(sql))
+            db.commit()
+            results.append({"column": name, "status": "ok"})
+        except Exception as e:
+            db.rollback()
+            results.append({"column": name, "status": "error", "detail": str(e)})
+    return {"migrations": results}
 
 
 # ── API: Pipeline Actions ────────────────────────────────────────
