@@ -158,9 +158,12 @@ async def upload_csv(file: UploadFile = File(...), db: Session = Depends(get_db)
                 company_name=row.get("company_name", row.get("company", "")),
                 website_url=row.get("website_url", row.get("website", "")),
                 contact_email=row.get("contact_email", row.get("email", "")),
+                store_count=row.get("store_count"),
+                hq_location=row.get("hq", row.get("hq_location")),
+                focus=row.get("focus"),
                 channel=row.get("channel"),
                 niche=row.get("niche"),
-                location=row.get("location"),
+                location=row.get("location", row.get("locations")),
             )
             result = pipeline.create_lead(db, req)
             if result.get("suppressed") or result.get("dedupe"):
@@ -168,8 +171,80 @@ async def upload_csv(file: UploadFile = File(...), db: Session = Depends(get_db)
             else:
                 results["created"] += 1
         except Exception as e:
+            logger.error(f"CSV import error: {e}")
             results["errors"] += 1
     return results
+
+
+@app.post("/api/leads/import-sheet")
+def import_sheet(leads_data: list[dict], db: Session = Depends(get_db)):
+    """
+    Import leads from Google Sheet JSON array.
+    Expected format: [
+      {
+        "company_name": "...",
+        "website_url": "...",
+        "store_count": "15+",
+        "locations": "...",
+        "hq": "...",
+        "focus": "...",
+        "channel": "retail",
+        "niche": "beauty"
+      }
+    ]
+    """
+    results = {"created": 0, "skipped": 0, "errors": 0}
+    for row in leads_data:
+        try:
+            # Generate a contact email placeholder - will be enriched
+            company_name = row.get("company_name", "")
+            website_url = row.get("website_url", "")
+
+            # Generate a temporary email based on domain
+            if website_url:
+                domain = website_url.replace("www.", "").rstrip("/")
+                if not domain.endswith(".com"):
+                    domain = f"{domain}.com"
+                contact_email = f"info@{domain}"
+            else:
+                contact_email = f"info@{company_name.lower().replace(' ', '')}.com"
+
+            req = LeadCreateRequest(
+                company_name=company_name,
+                website_url=website_url,
+                contact_email=contact_email,
+                store_count=row.get("store_count"),
+                hq_location=row.get("hq"),
+                focus=row.get("focus"),
+                channel=row.get("channel"),
+                niche=row.get("niche"),
+                location=row.get("locations"),
+            )
+            result = pipeline.create_lead(db, req)
+            if result.get("suppressed") or result.get("dedupe"):
+                results["skipped"] += 1
+            else:
+                results["created"] += 1
+        except Exception as e:
+            logger.error(f"Sheet import error: {e}")
+            results["errors"] += 1
+    return results
+
+
+# ── API: Email Enrichment ───────────────────────────────────────
+
+@app.post("/api/leads/{lead_id}/find-email")
+def find_email_for_lead_endpoint(lead_id: str, db: Session = Depends(get_db)):
+    """Find and enrich email for a specific lead."""
+    result = pipeline.enrich_lead_email(db, lead_id)
+    return result
+
+
+@app.post("/api/leads/enrich-all")
+def enrich_all_leads(db: Session = Depends(get_db)):
+    """Find and enrich emails for all leads missing purchasing emails."""
+    result = pipeline.enrich_all_leads_email(db)
+    return result
 
 
 # ── API: Pipeline Actions ────────────────────────────────────────

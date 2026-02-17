@@ -129,6 +129,10 @@ class Lead(Base):
     company_name = Column(String(300), nullable=False)
     website_url = Column(String(500), unique=True)
     contact_email = Column(String(300), nullable=False)
+    purchasing_email = Column(String(300))  # Enriched email for purchasing dept
+    store_count = Column(String(50))  # From import: "15+", "50", etc
+    hq_location = Column(String(300))  # HQ location for the company
+    focus = Column(String(500))  # Business focus/description
     channel = Column(String(50))
     niche = Column(String(200))
     location = Column(String(300))
@@ -428,6 +432,9 @@ class LeadCreateRequest(BaseModel):
     company_name: str
     website_url: Optional[str] = None
     contact_email: str
+    store_count: Optional[str] = None
+    hq_location: Optional[str] = None
+    focus: Optional[str] = None
     channel: Optional[str] = None
     niche: Optional[str] = None
     location: Optional[str] = None

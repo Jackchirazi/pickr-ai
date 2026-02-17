@@ -15,6 +15,7 @@ from pickr.models import (
 )
 from pickr.enrichment.scraper import StorefrontScraper
 from pickr.enrichment.analyzer import classify_lead, classify_reply
+from pickr.enrichment.email_finder import find_email_for_lead
 from pickr.engine.leverage import LeverageEngine, BrandMatcher
 from pickr.engine.email_generator import generate_email, generate_interest_response
 from pickr.engine.objection_handler import ObjectionHandler
@@ -65,6 +66,7 @@ class PickrPipeline:
             company_name=req.company_name, website_url=req.website_url,
             contact_email=email, channel=req.channel, niche=req.niche,
             location=req.location, notes=req.notes, status=LeadStatus.NEW.value,
+            store_count=req.store_count, hq_location=req.hq_location, focus=req.focus,
         )
         db.add(lead)
         db.flush()
@@ -412,3 +414,53 @@ class PickrPipeline:
             reply.draft_approved = None
         else:
             reply.draft_approved = True
+
+    # ── Email Enrichment ─────────────────────────────────────────────
+
+    def enrich_lead_email(self, db: Session, lead_id: str) -> dict:
+        """Find and enrich a lead's purchasing email."""
+        lead = db.query(Lead).filter(Lead.lead_id == lead_id).first()
+        if not lead:
+            return {"error": "Lead not found"}
+
+        if not lead.website_url:
+            return {"error": "No website URL for lead", "lead_id": lead_id}
+
+        # Skip if already has purchasing email
+        if lead.purchasing_email:
+            return {"status": "already_enriched", "email": lead.purchasing_email, "lead_id": lead_id}
+
+        logger.info(f"Enriching email for lead {lead_id}: {lead.company_name}")
+        email = find_email_for_lead(lead.company_name, lead.website_url)
+
+        if email:
+            lead.purchasing_email = email
+            db.commit()
+            logger.info(f"Enriched email for {lead.company_name}: {email}")
+            return {"status": "enriched", "email": email, "lead_id": lead_id}
+
+        return {"status": "not_found", "lead_id": lead_id}
+
+    def enrich_all_leads_email(self, db: Session) -> dict:
+        """Find and enrich emails for all leads missing purchasing emails."""
+        leads = db.query(Lead).filter(
+            Lead.website_url.isnot(None),
+            Lead.purchasing_email.is_(None)
+        ).all()
+
+        results = {"enriched": 0, "failed": 0, "already_have": 0}
+
+        for lead in leads:
+            try:
+                result = self.enrich_lead_email(db, lead.lead_id)
+                if result.get("status") == "enriched":
+                    results["enriched"] += 1
+                elif result.get("status") == "already_enriched":
+                    results["already_have"] += 1
+                else:
+                    results["failed"] += 1
+            except Exception as e:
+                logger.error(f"Error enriching {lead.lead_id}: {e}")
+                results["failed"] += 1
+
+        return results
