@@ -199,7 +199,7 @@ def import_sheet(leads_data: list[dict], db: Session = Depends(get_db)):
         try:
             # Generate a contact email placeholder - will be enriched
             company_name = row.get("company_name", "")
-            website_url = row.get("website_url", "")
+            website_url = row.get("website_url", "") or None  # None avoids unique constraint on empty
 
             # Generate a temporary email based on domain
             if website_url:
@@ -209,10 +209,12 @@ def import_sheet(leads_data: list[dict], db: Session = Depends(get_db)):
                 contact_email = f"info@{domain}"
             else:
                 # Clean company name for email domain
-                clean_name = company_name.lower()
-                for char in "()/'&+":
-                    clean_name = clean_name.replace(char, "")
-                clean_name = clean_name.replace(" ", "").replace("--", "-").strip("-")
+                import unicodedata, re
+                clean_name = unicodedata.normalize('NFKD', company_name.lower())
+                clean_name = clean_name.encode('ascii', 'ignore').decode('ascii')
+                clean_name = re.sub(r'[^a-z0-9]', '', clean_name)
+                if not clean_name:
+                    clean_name = "unknown"
                 contact_email = f"info@{clean_name}.com"
 
             req = LeadCreateRequest(
