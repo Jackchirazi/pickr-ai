@@ -116,6 +116,8 @@ def list_leads(status: Optional[str] = None, limit: int = 50, db: Session = Depe
         q = q.filter(Lead.status == status)
     leads = q.order_by(Lead.created_at.desc()).limit(limit).all()
     return [{"lead_id": l.lead_id, "company_name": l.company_name, "email": l.contact_email,
+             "purchasing_email": l.purchasing_email, "website": l.website_url,
+             "store_count": l.store_count, "hq": l.hq_location, "focus": l.focus,
              "status": l.status, "channel": l.channel, "niche": l.niche} for l in leads]
 
 
@@ -126,7 +128,9 @@ def get_lead(lead_id: str, db: Session = Depends(get_db)):
         raise HTTPException(404, "Lead not found")
     return {
         "lead_id": lead.lead_id, "company_name": lead.company_name,
-        "email": lead.contact_email, "website": lead.website_url,
+        "email": lead.contact_email, "purchasing_email": lead.purchasing_email,
+        "website": lead.website_url, "store_count": lead.store_count,
+        "hq": lead.hq_location, "focus": lead.focus,
         "status": lead.status, "channel": lead.channel, "niche": lead.niche,
         "disqualify_reason": lead.disqualify_reason,
         "signals": {
