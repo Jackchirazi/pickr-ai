@@ -202,12 +202,17 @@ def import_sheet(leads_data: list[dict], db: Session = Depends(get_db)):
 
             # Generate a temporary email based on domain
             if website_url:
-                domain = website_url.replace("www.", "").rstrip("/")
-                if not domain.endswith(".com"):
-                    domain = f"{domain}.com"
+                domain = website_url.replace("https://", "").replace("http://", "").replace("www.", "").rstrip("/")
+                if not domain:
+                    domain = f"{company_name.lower().replace(' ', '')}.com"
                 contact_email = f"info@{domain}"
             else:
-                contact_email = f"info@{company_name.lower().replace(' ', '')}.com"
+                # Clean company name for email domain
+                clean_name = company_name.lower()
+                for char in "()/'&+":
+                    clean_name = clean_name.replace(char, "")
+                clean_name = clean_name.replace(" ", "").replace("--", "-").strip("-")
+                contact_email = f"info@{clean_name}.com"
 
             req = LeadCreateRequest(
                 company_name=company_name,
